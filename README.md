@@ -1,16 +1,14 @@
 # chat_redis_app
 
-chat redis app
+## 설명
+flutter 채팅 앱
 
-## Getting Started
+## 진행 상황
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+| # | 기능 | 상태 |
+|------|------|--------|
+| 1 | 회원 정보 상태 관리(Riverpod) | ✅ |
+| 2 | API 통신(dio, interceptor) | ☐ |
+| 3 | 카카오 로그인 | ☐ |
+| 4 | 채팅 API | ☐ |
+| 5 | 파일 공유 | ☐ |
