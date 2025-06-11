@@ -1,4 +1,4 @@
-import 'package:chat_redis_app/models/member.dart';
+import 'package:chat_redis_app/models/login_request.dart';
 import 'package:chat_redis_app/providers/member_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +10,8 @@ class LoginPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final memberInfo = ref.watch(memberNotifierProvider);
     final isLogin = ref.watch(memberNotifierProvider.notifier).isLogin();
+
+    final memberNotifier = ref.read(memberNotifierProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
@@ -23,7 +25,7 @@ class LoginPage extends ConsumerWidget {
                   Text(memberInfo.accessToken ?? ""),
                   ElevatedButton(
                     onPressed: () {
-                      ref.read(memberNotifierProvider.notifier).clearMember();
+                      memberNotifier.clearMember();
                     },
                     child: const Text("로그아웃"),
                   ),
@@ -31,11 +33,9 @@ class LoginPage extends ConsumerWidget {
               )
             : ElevatedButton(
                 onPressed: () {
-                  ref
-                      .read(memberNotifierProvider.notifier)
-                      .setMember(
-                        Member(email: "test@test.com", accessToken: "test"),
-                      );
+                  memberNotifier.login(
+                    LoginRequest(platform: "KAKAO", accessToken: "test222"),
+                  );
                 },
                 child: const Text("로그인"),
               ),

@@ -1,3 +1,5 @@
+import 'package:chat_redis_app/apis/member_api.dart';
+import 'package:chat_redis_app/models/login_request.dart';
 import 'package:chat_redis_app/models/member.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,6 +15,11 @@ class MemberNotifier extends _$MemberNotifier {
   }
 
   bool isLogin() => state.email != '';
+
+  Future<void> login(LoginRequest loginRequest) async {
+    final member = await MemberApi().login(loginRequest);
+    state = member;
+  }
 
   void setMember(Member member) {
     state = member;
