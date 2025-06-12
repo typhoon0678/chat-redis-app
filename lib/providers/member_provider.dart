@@ -28,6 +28,6 @@ class MemberNotifier extends _$MemberNotifier {
 
   void clearMember() {
     state = _initialMember;
-    deleteAllCookies();
+    deleteAllCookiesInAppStorage();
   }
 }

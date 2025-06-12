@@ -5,6 +5,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,14 +16,23 @@ class DioApi {
   final String apiUrl = dotenv.get("API_URL");
 
   DioApi() {
-    dio = Dio(BaseOptions(contentType: "application/json"));
+    dio = Dio(
+      BaseOptions(
+        contentType: "application/json",
+        extra: {
+          'withCredentials': true, // 쿠키를 포함하여 요청
+        },
+      ),
+    );
 
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          String? accessToken = await storage.read(key: "accessToken");
+          final memberNotifier = ProviderContainer().read(
+            memberNotifierProvider,
+          );
 
-          options.headers["Authorization"] = accessToken;
+          options.headers["Authorization"] = memberNotifier.accessToken;
 
           return handler.next(options);
         },
@@ -34,11 +44,16 @@ class DioApi {
             e.requestOptions.extra["retry"] = true;
 
             try {
-              // 앱 내부 저장소 쿠키 포함 전송
-              final CookieJar cookieJar = await customCookieJar();
-              dio.interceptors.add(CookieManager(cookieJar));
-              final refreshResponse = await dio.get("$apiUrl/member/refresh");
-              dio.interceptors.remove(CookieManager(cookieJar));
+              late final Response refreshResponse;
+              if (!kIsWeb) {
+                // 앱 내부 저장소 쿠키 포함 전송
+                final CookieJar cookieJar = await customCookieJar();
+                dio.interceptors.add(CookieManager(cookieJar));
+                refreshResponse = await dio.get("$apiUrl/member/refresh");
+                dio.interceptors.remove(CookieManager(cookieJar));
+              } else {
+                refreshResponse = await dio.get("$apiUrl/member/refresh");
+              }
 
               // member 상태 업데이트
               final memberNotifier = ProviderContainer().read(

@@ -7,16 +7,11 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 import 'package:chat_redis_app/models/entities/cookie_info.dart';
 
+// 앱 저장소에 쿠키 저장
 Future<CookieJar> customCookieJar() async {
-  if (kIsWeb) {
-    // 웹 환경에서는 메모리 기반 쿠키 저장소 사용
-    return CookieJar();
-  } else {
-    // 모바일 환경에서는 파일 기반 쿠키 저장소 사용
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String appDocPath = appDocDir.path;
-    return PersistCookieJar(storage: FileStorage("$appDocPath/.cookies/"));
-  }
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  String appDocPath = appDocDir.path;
+  return PersistCookieJar(storage: FileStorage("$appDocPath/.cookies/"));
 }
 
 Future<void> listCookies() async {
@@ -75,9 +70,8 @@ Future<void> listCookies() async {
 }
 
 /// 모든 쿠키를 삭제합니다.
-Future<void> deleteAllCookies() async {
+Future<void> deleteAllCookiesInAppStorage() async {
   if (kIsWeb) {
-    debugPrint("웹 환경에서는 쿠키가 자동으로 관리됩니다.");
     return;
   }
 
