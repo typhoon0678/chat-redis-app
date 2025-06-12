@@ -1,5 +1,6 @@
-import 'package:chat_redis_app/models/login_request.dart';
+import 'package:chat_redis_app/models/requests/login_request.dart';
 import 'package:chat_redis_app/providers/member_provider.dart';
+import 'package:chat_redis_app/utils/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,29 +17,42 @@ class LoginPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Center(
-        child: isLogin
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(memberInfo.email ?? ""),
-                  Text(memberInfo.accessToken ?? ""),
-                  ElevatedButton(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            isLogin
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(memberInfo.email ?? ""),
+                      Text(memberInfo.accessToken ?? ""),
+                      Text(memberInfo.roles?.first ?? ""),
+                      ElevatedButton(
+                        onPressed: () {
+                          memberNotifier.clearMember();
+                        },
+                        child: const Text("로그아웃"),
+                      ),
+                    ],
+                  )
+                : ElevatedButton(
                     onPressed: () {
-                      memberNotifier.clearMember();
+                      memberNotifier.login(
+                        LoginRequest(platform: "KAKAO", accessToken: "test222"),
+                      );
                     },
-                    child: const Text("로그아웃"),
+                    child: const Text("로그인"),
                   ),
-                ],
-              )
-            : ElevatedButton(
-                onPressed: () {
-                  memberNotifier.login(
-                    LoginRequest(platform: "KAKAO", accessToken: "test222"),
-                  );
-                },
-                child: const Text("로그인"),
-              ),
+            ElevatedButton(
+              onPressed: () async {
+                await listCookies();
+              },
+              child: const Text("쿠키 확인"),
+            ),
+          ],
+        ),
       ),
     );
   }
