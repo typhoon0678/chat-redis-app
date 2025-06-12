@@ -1,8 +1,8 @@
+import 'package:chat_redis_app/apis/kakao_api.dart';
 import 'package:chat_redis_app/models/requests/login_request.dart';
 import 'package:chat_redis_app/providers/member_provider.dart';
 import 'package:chat_redis_app/utils/cookie_jar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginPage extends ConsumerWidget {
@@ -51,6 +51,12 @@ class LoginPage extends ConsumerWidget {
                 await listCookies();
               },
               child: const Text("쿠키 확인"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await KakaoApi().login();
+              },
+              child: const Text("카카오 로그인"),
             ),
           ],
         ),
